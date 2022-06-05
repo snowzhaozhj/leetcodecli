@@ -1,5 +1,8 @@
 pub mod database;
 
+mod buf_util;
+mod command;
+mod log;
 
 #[cfg(test)]
 mod tests {
