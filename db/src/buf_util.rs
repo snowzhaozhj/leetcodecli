@@ -2,20 +2,20 @@ use std::io::{BufReader, BufWriter, Read, Seek, SeekFrom, Write};
 
 use anyhow::Result;
 
-struct BufReaderWithPos<T: Read + Seek> {
-    reader: BufReader<T>,
-    pos: u64,
+pub(crate) struct BufReaderWithPos<T: Read + Seek> {
+    pub(crate) reader: BufReader<T>,
+    pub(crate) pos: u64,
 }
 
-struct BufWriterWithPos<T: Write + Seek> {
-    writer: BufWriter<T>,
-    pos: u64,
+pub(crate) struct BufWriterWithPos<T: Write + Seek> {
+    pub(crate) writer: BufWriter<T>,
+    pub(crate) pos: u64,
 }
 
 /* Implement BufReaderWithPos */
 
 impl<T: Read + Seek> BufReaderWithPos<T> {
-    fn new(mut file: T) -> Result<Self> {
+    pub(crate) fn new(mut file: T) -> Result<Self> {
         let pos = file.seek(SeekFrom::Current(0))?;
         Ok(BufReaderWithPos {
             reader: BufReader::new(file),
@@ -42,7 +42,7 @@ impl<T: Read + Seek> Seek for BufReaderWithPos<T> {
 /* Implement BufWriterWithPos */
 
 impl<T: Write + Seek> BufWriterWithPos<T> {
-    fn new(mut file: T) -> Result<Self> {
+    pub(crate) fn new(mut file: T) -> Result<Self> {
         let pos = file.seek(SeekFrom::Current(0))?;
         Ok(BufWriterWithPos {
             writer: BufWriter::new(file),
