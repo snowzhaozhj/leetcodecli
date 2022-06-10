@@ -1,8 +1,12 @@
 //! 访问 https://leetcode.cn/api/problems/all/ 返回的结构体
 
 use ansi_term::Color::{Green, Red, Yellow};
+use reqwest::Client;
+use reqwest::header::{HeaderMap, HeaderValue};
 use serde::{Serialize, Deserialize};
+use crate::leetcode::db::DB_KEYS;
 use crate::leetcode::term::icon::Icon;
+use crate::leetcode::error::{LeetcodeError, Result};
 
 #[derive(Serialize, Deserialize)]
 pub struct ProblemsAll {
@@ -91,5 +95,36 @@ impl StatStatus {
             self.stat.question_title,
             self.difficulty.to_string(),
         )
+    }
+}
+
+impl ProblemsAll {
+    pub async fn fetch() -> Result<ProblemsAll> {
+        let mut problems_all: ProblemsAll;
+        if let Some(val) = crate::leetcode::db::get(DB_KEYS.problems_all).await? {
+            problems_all = serde_json::from_str(&val)?;
+        } else {
+            let cookie = crate::leetcode::db::get(DB_KEYS.cookie).await?.unwrap_or("".to_string());
+            let mut headers = HeaderMap::new();
+            headers.insert("Cookie", HeaderValue::from_str(&cookie).unwrap());
+            let client = Client::builder()
+                .default_headers(headers)
+                .build()?;
+            problems_all = client.get("https://leetcode.cn/api/problems/all")
+                .send()
+                .await?
+                .json::<ProblemsAll>()
+                .await
+                .map_err(LeetcodeError::Reqwest)?;
+            problems_all.stat_status_pairs
+                .sort_by_key(|ss| {
+                    ss.stat.question_id
+                });
+            crate::leetcode::db::set(
+                DB_KEYS.problems_all.to_string(),
+                serde_json::to_string(&problems_all).unwrap())
+                .await?;
+        }
+        Ok(problems_all)
     }
 }
