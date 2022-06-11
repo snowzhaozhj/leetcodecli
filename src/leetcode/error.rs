@@ -10,12 +10,6 @@ pub enum LeetcodeError {
     Regex(#[from] regex::Error),
     Reqwest(#[from] reqwest::Error),
     InvalidHeaderValue(#[from] reqwest::header::InvalidHeaderValue),
-
-    #[error("Tried to unwrap None")]
-    UnwrapNone,
-
-    #[error("Unexpected command")]
-    UnexpectedCommand,
 }
 
 pub type Result<T> = anyhow::Result<T, LeetcodeError>;
