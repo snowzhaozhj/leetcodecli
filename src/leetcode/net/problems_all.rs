@@ -1,9 +1,11 @@
 //! 访问 https://leetcode.cn/api/problems/all/ 返回的结构体
 
 use ansi_term::Color::{Green, Red, Yellow};
+use log::debug;
 use reqwest::Client;
 use reqwest::header::{HeaderMap, HeaderValue};
 use serde::{Serialize, Deserialize};
+use crate::leetcode::config::CONST_CONFIG;
 use crate::leetcode::db::DB_KEYS;
 use crate::leetcode::term::icon::Icon;
 use crate::leetcode::error::{LeetcodeError, Result};
@@ -110,7 +112,7 @@ impl ProblemsAll {
             let client = Client::builder()
                 .default_headers(headers)
                 .build()?;
-            problems_all = client.get("https://leetcode.cn/api/problems/all")
+            problems_all = client.get(CONST_CONFIG.url.leetcode.problems_all)
                 .send()
                 .await?
                 .json::<ProblemsAll>()
@@ -125,6 +127,7 @@ impl ProblemsAll {
                 serde_json::to_string(&problems_all).unwrap())
                 .await?;
         }
+        debug!("ProblemsAll: {}", serde_json::to_string_pretty(&problems_all).unwrap());
         Ok(problems_all)
     }
 }

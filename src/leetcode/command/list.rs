@@ -19,7 +19,7 @@ impl ListPlugin {
 
     pub async fn list_problems_all(&self) {
         self.problems_all.as_ref()
-            .expect("problems_all is none")
+            .expect("fail to fetch problems")
             .stat_status_pairs
             .iter()
             .for_each(|s| {
