@@ -86,7 +86,9 @@ pub struct List {
 }
 
 #[derive(Debug, Args)]
-pub struct Pick {}
+pub struct Pick {
+    pub question_id: i32,
+}
 
 #[derive(Debug, Args)]
 pub struct Test {}
@@ -131,7 +133,9 @@ pub async fn process() -> Result<()> {
             }
             app.list_problems().await?;
         }
-        Commands::Pick(_) => {}
+        Commands::Pick(pick) => {
+            app.pick_problem(pick.question_id).await?;
+        }
         Commands::Test(_) => {}
         Commands::Sumbit(_) => {}
     }
