@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use crate::leetcode::cli::Pick;
 
 use crate::leetcode::error::Result;
 use crate::leetcode::command::auth::{self, AuthPlugin};
@@ -41,9 +42,10 @@ impl Leetcode {
         Ok(())
     }
 
-    pub async fn pick_problem(&mut self, question_id: i32) -> Result<()> {
+    pub async fn pick_problem(&mut self, pick: Pick) -> Result<()> {
         self.pick_plugin.fetch_problems_all().await?;
-        self.pick_plugin.fetch_question_data(question_id).await?;
+        self.pick_plugin.fetch_question_data(pick.question_id).await?;
+        self.pick_plugin.save_to_file(pick.language).await?;
         Ok(())
     }
 }

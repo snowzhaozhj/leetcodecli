@@ -33,10 +33,12 @@ pub(crate) async fn remove(key: &str) -> Result<()> {
 pub struct DBKeys<'a> {
     pub cookie: &'a str,
     pub problems_all: &'a str,
+    pub language: &'a str,
 }
 
 pub const DB_KEYS: DBKeys<'static> = DBKeys {
     cookie: "Cookie",
     problems_all: "ProblemsAll",
+    language: "Language",
 };
 
