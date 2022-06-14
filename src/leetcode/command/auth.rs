@@ -1,11 +1,10 @@
 use std::collections::HashMap;
 use async_trait::async_trait;
-use cookie::{Cookie};
+use cookie::{Cookie, CookieJar};
 use log::debug;
 use crate::leetcode::db::DB_KEYS;
 
 use crate::leetcode::error::Result;
-use crate::leetcode::util::cookie::cookie_jar_to_string;
 
 #[async_trait]
 pub trait AuthPlugin {
@@ -112,4 +111,11 @@ impl AuthPlugin for GitAuthPlugin {
     async fn logout(&mut self) -> Result<()> {
         todo!()
     }
+}
+
+fn cookie_jar_to_string(cookie_jar: &CookieJar) -> String {
+    cookie_jar.iter()
+        .map(|c| c.to_string())
+        .collect::<Vec<_>>()
+        .join("; ")
 }
