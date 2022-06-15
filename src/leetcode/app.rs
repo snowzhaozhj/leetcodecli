@@ -54,7 +54,8 @@ impl Leetcode {
     }
 
     pub async fn sumbit(&mut self, submit: Submit) -> Result<()> {
-        self.submit_plugin.submit_code(submit.filename.as_str()).await?;
+        self.submit_plugin.submit_code(submit.filename.as_str(),
+                                       submit.test_data).await?;
         self.submit_plugin.show_judge_result().await?;
         Ok(())
     }

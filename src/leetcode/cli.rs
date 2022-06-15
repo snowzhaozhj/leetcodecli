@@ -24,9 +24,6 @@ enum Commands {
     /// pick a problem
     Pick(Pick),
 
-    /// test your answer
-    Test(Test),
-
     /// submit you answer
     Submit(Submit),
 }
@@ -94,11 +91,13 @@ pub struct Pick {
 }
 
 #[derive(Debug, Args)]
-pub struct Test {}
-
-#[derive(Debug, Args)]
 pub struct Submit {
+    /// the source code file to submit
     pub filename: String,
+
+    /// test mode, "\n" in test_data will be turn into new line
+    #[clap(short, long)]
+    pub test_data: Option<String>,
 }
 
 pub async fn process() -> Result<()> {
@@ -141,7 +140,6 @@ pub async fn process() -> Result<()> {
         Commands::Pick(pick) => {
             app.pick_problem(pick).await?;
         }
-        Commands::Test(_) => {}
         Commands::Submit(submit) => {
             app.sumbit(submit).await?;
         }

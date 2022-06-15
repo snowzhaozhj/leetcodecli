@@ -8,14 +8,14 @@ use log::debug;
 use crate::leetcode::net::judge::JudgeResult;
 
 pub struct SubmitPlugin {
-    submission_id: usize,
+    submission_id: String,
     language: Option<Language<'static>>,
 }
 
 impl SubmitPlugin {
     pub fn new() -> SubmitPlugin {
         SubmitPlugin {
-            submission_id: 0,
+            submission_id: String::new(),
             language: None,
         }
     }
@@ -37,20 +37,39 @@ impl SubmitPlugin {
         Ok(content)
     }
 
-    pub async fn submit_code(&mut self, filename: &str) -> Result<()> {
+    pub async fn submit_code(&mut self, filename: &str, test_data: Option<String>) -> Result<()> {
         if let Ok((id, slug, ext)) = sscanf::scanf!(filename, "{usize}-{str}.{str}") {
             self.language = Some(Language::from_extension(&ext)
                 .expect("extension not support"));
+
             let typed_code = self
                 .read_code_from_file(filename)
                 .expect("read code failed");
             debug!("typed_code: {}", typed_code);
-            self.submission_id = submit(SubmitArgs::new(
-                self.language.as_ref().unwrap().name.to_string(),
-                slug.to_string(),
-                id.to_string(),
-                typed_code,
-            )).await.expect("submit failed").submission_id;
+
+            let submit_args = match test_data {
+                None => {
+                    SubmitArgs::new(
+                        self.language.as_ref().unwrap().name.to_string(),
+                        slug.to_string(),
+                        id.to_string(),
+                        typed_code,
+                    )
+                }
+                Some(mut data_input) => {
+                    data_input = data_input.replace("\\n", "\n");
+                    SubmitArgs::new_test(
+                        slug.to_string(),
+                        data_input,
+                        self.language.as_ref().unwrap().name.to_string(),
+                        id.to_string(),
+                        typed_code,
+                    )
+                }
+            };
+            debug!("submit args: {}", serde_json::to_string_pretty(&submit_args).unwrap());
+
+            self.submission_id = submit(submit_args).await.expect("submit failed");
             debug!("submission_id: {}", self.submission_id);
             Ok(())
         } else {
@@ -59,7 +78,7 @@ impl SubmitPlugin {
     }
 
     pub async fn show_judge_result(&self) -> Result<()> {
-        JudgeResult::get(self.submission_id)
+        JudgeResult::get(self.submission_id.as_str())
             .await
             .expect("get judge result failed")
             .pretty_print();

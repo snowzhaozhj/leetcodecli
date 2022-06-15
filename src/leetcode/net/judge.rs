@@ -10,6 +10,27 @@ use crate::leetcode::db::DB_KEYS;
 use crate::leetcode::error::Result;
 use crate::leetcode::term::icon::Icon;
 
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum StringOrStringVec {
+    String(String),
+    StringVec(Vec<String>),
+}
+
+impl ToString for StringOrStringVec {
+    fn to_string(&self) -> String {
+        match self {
+            StringOrStringVec::String(s) => {
+                s.to_string()
+            }
+            StringOrStringVec::StringVec(v) => {
+                v.join("\n")
+            }
+        }
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct JudgeResult {
     pub status_code: i32,
@@ -17,14 +38,20 @@ pub struct JudgeResult {
     pub run_success: bool,
     pub status_runtime: String,
     pub memory: usize,
-    pub question_id: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub question_id: Option<String>,
+
     pub elapsed_time: usize,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub compare_result: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub code_output: Option<String>,
+    pub code_anwser: Option<StringOrStringVec>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code_output: Option<StringOrStringVec>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub std_output: Option<String>,
@@ -37,7 +64,10 @@ pub struct JudgeResult {
 
     pub task_finish_time: usize,
     pub task_name: String,
-    pub finished: bool,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub finished: Option<bool>,
+
     pub status_msg: String,
     pub state: String,
     pub fast_submit: bool,
@@ -57,12 +87,13 @@ pub struct JudgeResult {
 }
 
 impl JudgeResult {
-    pub async fn get(submission_id: usize) -> Result<JudgeResult> {
+    pub async fn get(submission_id: &str) -> Result<JudgeResult> {
         let get_url = CONST_CONFIG
             .url
             .leetcode
             .veriry
-            .replace("$id", submission_id.to_string().as_str());
+            .replace("$id", submission_id);
+        debug!("submission_id: {}, get_url: {}", submission_id, get_url);
         let cookie = crate::leetcode::db::get(DB_KEYS.cookie)
             .await?
             .unwrap_or("".to_string());
@@ -103,12 +134,12 @@ Your runtime beats {}% of {} submissions
 Your memory usage beats {}% of {} submissions ({})"#,
                     Icon::Yes.to_string(),
                     self.status_msg,
-                    self.total_correct.unwrap(),
-                    self.total_testcases.unwrap(),
+                    self.total_correct.unwrap_or(0),
+                    self.total_testcases.unwrap_or(0),
                     self.status_runtime,
-                    self.runtime_percentile.expect("missing runtime percentile field"),
+                    self.runtime_percentile.unwrap_or(0.0),
                     self.lang,
-                    self.memory_percentile.expect("missing runtime percentile field"),
+                    self.memory_percentile.unwrap_or(0.0),
                     self.lang,
                     self.status_memory
                 );
@@ -155,7 +186,7 @@ expectd_output:
                     self.total_testcases.unwrap(),
                     self.status_runtime,
                     self.last_testcase.as_ref().expect("missing last testcase field"),
-                    self.code_output.as_ref().expect("missing code output field"),
+                    self.code_output.as_ref().expect("missing code output field").to_string(),
                     self.expected_output.as_ref().expect("missing code output field"),
                 );
                 println!("{}", Red.paint(content));
