@@ -621,7 +621,7 @@ dependencies = [
 
 [[package]]
 name = "leetcodecli"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "ansi_term",
  "anyhow",
@@ -643,6 +643,7 @@ dependencies = [
  "sscanf",
  "thiserror",
  "tokio",
+ "unicode-width",
 ]
 
 [[package]]

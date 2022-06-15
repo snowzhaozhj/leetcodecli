@@ -68,6 +68,18 @@ impl ToString for Difficulty {
     }
 }
 
+fn to_width(s: &str, width: usize) -> String {
+    let cur_width = unicode_width::UnicodeWidthStr::width(s);
+    if cur_width > width {
+        let mut s = s[..width-3].to_string();
+        s.push_str("...");
+        return s;
+    }
+    let mut s = s.to_string();
+    s.push_str(" ".repeat(width - cur_width).as_str());
+    s
+}
+
 impl StatStatus {
     pub fn pretty_print(&self) {
         let starred_icon = if self.is_favor {
@@ -89,12 +101,12 @@ impl StatStatus {
         };
 
         println!(
-            "{} {:2} {} [{:^4}] {:75} {:6}",
+            "{} {:2} {} [{:^8}] {} {:6}",
             starred_icon,
             locked_icon,
             accepted_icon,
             self.stat.question_id,
-            self.stat.question_title,
+            to_width(self.stat.question_title.as_str(), 75),
             self.difficulty.to_string(),
         )
     }

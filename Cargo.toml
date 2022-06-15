@@ -1,6 +1,6 @@
 [package]
 name = "leetcodecli"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["snowzhaozhj <190110407@stu.hit.edu.cn>"]
 edition = "2021"
 license = "MIT"
@@ -29,3 +29,4 @@ ansi_term = "0.12.1"
 serde_with = { version = "1.14.0", features = ["json"]}
 html2text = "0.4.2"
 sscanf = "0.2.1"
+unicode-width = "0.1.9"
