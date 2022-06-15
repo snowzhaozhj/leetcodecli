@@ -1,4 +1,3 @@
-mod problem;
 mod db;
 mod command;
 

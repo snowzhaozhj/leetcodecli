@@ -24,7 +24,7 @@ enum Commands {
     /// pick a problem
     Pick(Pick),
 
-    /// submit you answer
+    /// submit your answer
     Submit(Submit),
 }
 
@@ -84,8 +84,10 @@ pub struct List {
 
 #[derive(Debug, Args)]
 pub struct Pick {
+    /// the id of the question
     pub question_id: i32,
 
+    /// programming language to write answer
     #[clap(short, long)]
     pub language: Option<String>,
 }
