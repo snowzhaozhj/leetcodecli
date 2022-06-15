@@ -6,7 +6,7 @@ use log::debug;
 use crate::leetcode::app::Leetcode;
 
 #[derive(Debug, Parser)]
-#[clap(name = "leetcode")]
+#[clap(name = "leetcodecli")]
 #[clap(version)]
 struct Cli {
     #[clap(subcommand)]
