@@ -63,3 +63,17 @@ impl<'a> FromStr for Language<'a> {
         }
     }
 }
+
+impl<'a> Language<'a> {
+    pub fn from_extension(e: &str) -> Result<Self, LeetcodeError> {
+        match e {
+            "c" => Ok(Language::C),
+            "cpp" => Ok(Language::CPP),
+            "go" => Ok(Language::GO),
+            "java" => Ok(Language::JAVA),
+            "py" => Ok(Language::PYTHON),
+            "rs" => Ok(Language::RUST),
+            _ => Err(LeetcodeError::Any(anyhow!("extension not supported!")))
+        }
+    }
+}

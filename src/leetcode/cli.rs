@@ -28,7 +28,7 @@ enum Commands {
     Test(Test),
 
     /// submit you answer
-    Sumbit(Submit),
+    Submit(Submit),
 }
 
 #[derive(Debug, Args)]
@@ -97,7 +97,9 @@ pub struct Pick {
 pub struct Test {}
 
 #[derive(Debug, Args)]
-pub struct Submit {}
+pub struct Submit {
+    pub filename: String,
+}
 
 pub async fn process() -> Result<()> {
     let cli: Cli = Cli::parse();
@@ -140,7 +142,9 @@ pub async fn process() -> Result<()> {
             app.pick_problem(pick).await?;
         }
         Commands::Test(_) => {}
-        Commands::Sumbit(_) => {}
+        Commands::Submit(submit) => {
+            app.sumbit(submit).await?;
+        }
     }
     Ok(())
 }

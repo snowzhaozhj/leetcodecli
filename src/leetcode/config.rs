@@ -41,8 +41,8 @@ pub const CONST_CONFIG: ConstConfig<'static> = ConstConfig {
             test: formatcp!("{}/problems/$slug/interpret_solution/", BASE),
             submit: formatcp!("{}/problems/$slug/submit/", BASE),
             submission: formatcp!("{}/api/submissions/detail/$id", BASE),
-            submissions: formatcp!("{}/submissions/detail/$id", BASE),
-            veriry: formatcp!("{}/submissions/detail/$id/check", BASE),
+            submissions: formatcp!("{}/problems/$slug/submissions/", BASE),
+            veriry: formatcp!("{}/submissions/detail/$id/check/", BASE),
             github_login: formatcp!("{}/accounts/github/login/?next=%2F", BASE),
         },
         github: GithubUrls {
