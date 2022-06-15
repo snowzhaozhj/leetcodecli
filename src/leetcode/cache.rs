@@ -1,6 +1,6 @@
 use dirs::home_dir;
 use tokio::sync::Mutex;
-use db::database::DataBase;
+use leetcode_cache::database::DataBase;
 use lazy_static::lazy_static;
 
 use crate::leetcode::error::Result;

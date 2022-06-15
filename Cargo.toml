@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-db = { path = "./db", version = "0.1.0" }
+leetcode_cache = { path = "./leetcode_cache", version = "0.1.0" }
 anyhow = "1.0.57"
 thiserror = "1.0.31"
 serde = "1.0.137"

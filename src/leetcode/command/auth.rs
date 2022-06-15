@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use async_trait::async_trait;
 use cookie::{Cookie, CookieJar};
 use log::debug;
-use crate::leetcode::db::DB_KEYS;
+use crate::leetcode::cache::DB_KEYS;
 
 use crate::leetcode::error::Result;
 
@@ -58,12 +58,12 @@ impl CookieAuthPlugin {
     }
 
     async fn store_cookie(&mut self) -> Result<()> {
-        crate::leetcode::db::set(DB_KEYS.cookie.to_string(), self.cookie.clone()).await?;
+        crate::leetcode::cache::set(DB_KEYS.cookie.to_string(), self.cookie.clone()).await?;
         Ok(())
     }
 
     async fn remove_cookie(&self) -> Result<()> {
-        crate::leetcode::db::remove(DB_KEYS.cookie).await?;
+        crate::leetcode::cache::remove(DB_KEYS.cookie).await?;
         Ok(())
     }
 }

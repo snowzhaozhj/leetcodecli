@@ -6,7 +6,7 @@ use reqwest::Client;
 use reqwest::header::{HeaderMap, HeaderValue};
 use serde::{Serialize, Deserialize};
 use crate::leetcode::config::CONST_CONFIG;
-use crate::leetcode::db::DB_KEYS;
+use crate::leetcode::cache::DB_KEYS;
 use crate::leetcode::term::icon::Icon;
 use crate::leetcode::error::{LeetcodeError, Result};
 
@@ -103,10 +103,10 @@ impl StatStatus {
 impl ProblemsAll {
     pub async fn fetch() -> Result<ProblemsAll> {
         let mut problems_all: ProblemsAll;
-        if let Some(val) = crate::leetcode::db::get(DB_KEYS.problems_all).await? {
+        if let Some(val) = crate::leetcode::cache::get(DB_KEYS.problems_all).await? {
             problems_all = serde_json::from_str(&val)?;
         } else {
-            let cookie = crate::leetcode::db::get(DB_KEYS.cookie).await?.unwrap_or("".to_string());
+            let cookie = crate::leetcode::cache::get(DB_KEYS.cookie).await?.unwrap_or("".to_string());
             let mut headers = HeaderMap::new();
             headers.insert("Cookie", HeaderValue::from_str(&cookie).unwrap());
             let client = Client::builder()
@@ -122,7 +122,7 @@ impl ProblemsAll {
                 .sort_by_key(|ss| {
                     ss.stat.question_id
                 });
-            crate::leetcode::db::set(
+            crate::leetcode::cache::set(
                 DB_KEYS.problems_all.to_string(),
                 serde_json::to_string(&problems_all).unwrap())
                 .await?;

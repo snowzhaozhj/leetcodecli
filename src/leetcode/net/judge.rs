@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::time::Duration;
 
 use crate::leetcode::config::CONST_CONFIG;
-use crate::leetcode::db::DB_KEYS;
+use crate::leetcode::cache::DB_KEYS;
 use crate::leetcode::error::Result;
 use crate::leetcode::term::icon::Icon;
 
@@ -94,7 +94,7 @@ impl JudgeResult {
             .veriry
             .replace("$id", submission_id);
         debug!("submission_id: {}, get_url: {}", submission_id, get_url);
-        let cookie = crate::leetcode::db::get(DB_KEYS.cookie)
+        let cookie = crate::leetcode::cache::get(DB_KEYS.cookie)
             .await?
             .unwrap_or("".to_string());
 

@@ -4,7 +4,7 @@ use reqwest::header::{HeaderMap, HeaderValue};
 use serde::{Serialize, Deserialize};
 use serde_json::json;
 use crate::leetcode::config::CONST_CONFIG;
-use crate::leetcode::db::DB_KEYS;
+use crate::leetcode::cache::DB_KEYS;
 
 use crate::leetcode::error::{LeetcodeError, Result};
 
@@ -90,7 +90,7 @@ struct Data {
 
 impl QuestionData {
     pub async fn fetch(question_title_slug: &str) -> Result<QuestionData> {
-        let cookie = crate::leetcode::db::get(DB_KEYS.cookie).await?.unwrap_or("".to_string());
+        let cookie = crate::leetcode::cache::get(DB_KEYS.cookie).await?.unwrap_or("".to_string());
         let mut headers = HeaderMap::new();
         headers.insert("Cookie", HeaderValue::from_str(&cookie).unwrap());
         let client = Client::builder()

@@ -1,4 +1,4 @@
-mod db;
+mod cache;
 mod command;
 
 pub mod error;

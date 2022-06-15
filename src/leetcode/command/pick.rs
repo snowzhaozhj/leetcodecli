@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::Write;
 use std::str::FromStr;
 use log::debug;
-use crate::leetcode::db::DB_KEYS;
+use crate::leetcode::cache::DB_KEYS;
 use crate::leetcode::net::problems_all::ProblemsAll;
 use crate::leetcode::error::Result;
 use crate::leetcode::lang::Language;
@@ -56,7 +56,7 @@ impl PickPlugin {
         let question_data = self.question_data.as_ref().unwrap();
 
         let language = self.parse_language(language).await.unwrap_or(Language::C);
-        crate::leetcode::db::set(DB_KEYS.language.to_string(), language.name.to_string()).await?;
+        crate::leetcode::cache::set(DB_KEYS.language.to_string(), language.name.to_string()).await?;
 
         let mut filename = env::current_dir()?;
         filename.push(format!("{}-{}", self.question_id, self.question_title_slug));
@@ -100,7 +100,7 @@ impl PickPlugin {
         return match language {
             None => {
                 // 从Cache中读取
-                if let Some(s) = crate::leetcode::db::get(DB_KEYS.language).await? {
+                if let Some(s) = crate::leetcode::cache::get(DB_KEYS.language).await? {
                     Ok(Language::from_str(s.as_str())?)
                 } else {
                     Ok(Language::C)

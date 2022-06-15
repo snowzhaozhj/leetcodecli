@@ -3,7 +3,7 @@ use reqwest::Client;
 use reqwest::header::{HeaderMap, HeaderValue};
 use serde::{Serialize, Deserialize};
 use crate::leetcode::config::CONST_CONFIG;
-use crate::leetcode::db::DB_KEYS;
+use crate::leetcode::cache::DB_KEYS;
 
 use crate::leetcode::error::Result;
 
@@ -66,7 +66,7 @@ pub async fn submit(args: SubmitArgs) -> Result<String> {
         // 测试模式
         CONST_CONFIG.url.leetcode.test.replace("$slug", args.question_slug.as_str())
     };
-    let cookie = crate::leetcode::db::get(DB_KEYS.cookie).await?.unwrap_or("".to_string());
+    let cookie = crate::leetcode::cache::get(DB_KEYS.cookie).await?.unwrap_or("".to_string());
 
     let mut headers = HeaderMap::new();
     headers.insert("Cookie", HeaderValue::from_str(&cookie).unwrap());
