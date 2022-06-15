@@ -1,7 +1,10 @@
 [package]
 name = "leetcodecli"
 version = "0.1.0"
+authors = ["snowzhaozhj <190110407@stu.hit.edu.cn>"]
 edition = "2021"
+license = "MIT"
+description = "cli for leetcode"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

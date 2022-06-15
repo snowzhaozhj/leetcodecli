@@ -1,8 +1,10 @@
 [package]
 name = "leetcode_cache"
 version = "0.1.0"
+authors = ["snowzhaozhj <190110407@stu.hit.edu.cn>"]
 edition = "2021"
 description = "simple kv db"
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
